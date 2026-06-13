@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Task Manager Application
 
 ## Project Description
@@ -197,3 +198,6 @@ Contributions are welcome! Please feel free to fork the repository, make changes
 ## License
 
 This project is licensed under the MIT License.
+=======
+# Task-Manager
+>>>>>>> b87291704d8f5133fee69407af95c9fdf5e6c9e2
