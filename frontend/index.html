@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+    <link rel="shortcut icon" href="/favicon.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#7c6ff7" />
+    <meta name="description" content="TaskFlow - A modern, fast task management app that works online and offline" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="TaskFlow" />
+    <link rel="apple-touch-icon" href="/icon-512.png" />
+    <title>TaskFlow - Modern Task Management</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+    <script>
+      // Register Service Worker for offline support
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/service-worker.js')
+            .then(registration => {
+              console.log('Service Worker registered successfully:', registration);
+              
+              // Check for updates periodically
+              setInterval(() => {
+                registration.update();
+              }, 60000); // Check every minute
+            })
+            .catch(error => {
+              console.log('Service Worker registration failed:', error);
+            });
+
+          // Listen for controller change (new SW activated)
+          navigator.serviceWorker.addEventListener('controllerchange', () => {
+            console.log('New Service Worker activated, app updated!');
+          });
+        });
+
+        // Handle SW messages
+        navigator.serviceWorker.addEventListener('message', (event) => {
+          if (event.data.type === 'SYNC_TASKS') {
+            console.log('Syncing tasks after coming back online...');
+            // Dispatch custom event for React to handle
+            window.dispatchEvent(new CustomEvent('online-sync'));
+          }
+        });
+      }
+
+      // Detect online/offline status
+      window.addEventListener('online', () => {
+        console.log('Back online!');
+        window.dispatchEvent(new CustomEvent('app-online'));
+      });
+
+      window.addEventListener('offline', () => {
+        console.log('Offline mode');
+        window.dispatchEvent(new CustomEvent('app-offline'));
+      });
+    </script>
+  </body>
+</html>

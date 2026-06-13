@@ -1,0 +1,29 @@
+const express = require('express');
+const {
+  getTasks,
+  getTask,
+  createTask,
+  updateTask,
+  deleteTask,
+  clearCompletedTasks,
+  clearAllTasks
+} = require('../controllers/taskController');
+const { protect } = require('../middleware/auth');
+
+const router = express.Router();
+
+router.use(protect); // All task routes are protected
+
+router.route('/')
+  .get(getTasks)
+  .post(createTask);
+
+router.delete('/completed', clearCompletedTasks);
+router.delete('/all', clearAllTasks);
+
+router.route('/:id')
+  .get(getTask)
+  .put(updateTask)
+  .delete(deleteTask);
+
+module.exports = router;
