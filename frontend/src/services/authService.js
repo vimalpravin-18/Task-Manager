@@ -4,6 +4,8 @@ const API_URL = `${import.meta.env.VITE_API_URL}/auth`;
 
 // Set auth token for all requests
 const setAuthToken = (token) => {
+
+  console.log("Social Login URL:", `${import.meta.env.VITE_API_URL}/auth/social-login`);
   if (token) {
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   } else {
@@ -64,7 +66,7 @@ const login = async (email, password) => {
 // Social login
 const socialLogin = async (name, email) => {
   try {
-    const response = await axios.post(`${API_URL}/social-login`, {
+    const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/social-login`, {
       name,
       email,
     });
